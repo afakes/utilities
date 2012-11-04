@@ -82,26 +82,25 @@ class util {
      * @param type $default
      * @return type 
      */
-    public static function  CommandScriptsFoldermandLineOptionValue($array,$optionName,$default = null)
+    public static function  CommandLineOptionValue($array,$optionName,$default = null)
     {
-
-        if (!array_util::Contains($array, $optionName)) return $default;
-
-        $fp = array_util::FirstElementsThatContain($array, $optionName);
-        if (is_null($fp)) return $default;
-
-        $value = str_replace("--{$optionName}=", '', $fp);
-        $value = str_replace("'", '', $value);
-
         
-        if ($value == "true") return true;
-        if ($value == "false") return false;
+
+        $result = $default;
+        foreach ($array as $value) 
+        {
+            if (util::contains($value, "--{$optionName}="))
+                $result = str_replace("--{$optionName}=", '', $value);
+        }
         
-        $value = trim($value);
+        $result = str_replace("'", '', $result);
         
-        if ($value == "") return $default;
+        if ($result == "true") return true;
+        if ($result == "false") return false;
         
-        return $value;
+        $result = trim($result);
+        
+        return $result;
 
     }
     
