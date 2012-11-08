@@ -95,10 +95,8 @@ class util {
         
         $result = str_replace("'", '', $result);
         
-        if ($result == "true") return true;
-        if ($result == "false") return false;
-        
-        $result = trim($result);
+        if (trim($result) == "true") return true;
+        if (trim($result) == "false") return false;
         
         return $result;
 

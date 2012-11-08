@@ -769,11 +769,9 @@ class file {
         return (file_exists($output));
     }
 
-    public static function wget($url,$output_filename,$debug = false)
+    public static function wget($url,$output_filename)
     {
-        $cmd =  "wget -q -O -L1 \"$output_filename\" \"$url\"";
-
-        if ($debug) echo " WGET command : $cmd \n";
+        $cmd =  "wget -O  \"$output_filename\" \"$url\"";
 
         exec($cmd);
         if (file_exists($output_filename)) return $output_filename;
