@@ -22,10 +22,10 @@ class debug
 
         if ($echo) echo "$dd";
 
-        file_put_contents("//**sensor_web.debug", $dd."\n",FILE_APPEND);
+        file_put_contents("web.debug", $dd."\n",FILE_APPEND);
     }
 
-    public static function toFile($fn = "//**sensor_web.file.debug",$data = "\n---------------------------------------------\n")
+    public static function toFile($fn = "file.debug",$data = "\n---------------------------------------------\n")
     {
 
         if (is_array($data))

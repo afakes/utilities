@@ -35,6 +35,12 @@ class database
     {
         return $this->db;
     }
+
+    public function HOST()
+    {
+        return $this->host;
+    }
+    
     
     public function __destruct()
     {
@@ -52,8 +58,52 @@ class database
     }
 
 
-    public function database_names($like = "%")
+    
+    public function table_names_for_databases($database_pattern_array)
     {
+        
+        $result = array();
+
+        if (is_array($database_pattern_array))
+            
+            foreach ($database_pattern_array as $database_pattern) 
+            {
+                foreach ($this->database_names($database_pattern) as $database) 
+                {
+                    foreach ($this->table_names($database)  as $tabe_name) 
+                    {
+                        $result[$database][$tabe_name] = "";
+                    }
+                    
+                }
+                        
+            }
+                
+                
+        else
+        {
+            
+            
+            foreach ($this->database_names($database_pattern_array) as $database) 
+            {
+                foreach ($this->table_names($database)  as $tabe_name) 
+                {
+                    $result[$database][$tabe_name] = "";
+                }
+            }
+            
+        }
+
+        
+        return $result;
+        
+    }
+    
+    
+    public function database_names($like = "")
+    {
+        $like = $like."%";
+        
         $sql_result = $this->query("SELECT S.`SCHEMA_NAME` as database_name FROM information_schema.SCHEMATA S where SCHEMA_NAME != 'information_schema' and SCHEMA_NAME != 'mysql' and SCHEMA_NAME like '$like';",'database_name');
         
         return array_keys($sql_result);
@@ -1686,7 +1736,7 @@ class database
         
         if (is_null($filename)) $filename = "{$db}_{$tableName}.csv";
         
-        $cmd = "mysql -u{$this->userID} -p{$this->pwd} --batch --raw --execute='select * from `{$db}`.`{$tableName}` ' | tr \"{$delim}\" \" \" | tr '\\t' \"{$delim}\" | sed 's/NULL//g' > $filename";
+        $cmd = "mysql -h{$this->host} -u{$this->userID} -p{$this->pwd} --batch --raw --execute='select * from `{$db}`.`{$tableName}` ' | tr \"{$delim}\" \" \" | tr '\\t' \"{$delim}\" | sed 's/NULL//g' > $filename";
         exec($cmd);
      
         if (!file_exists($filename)) 
@@ -1734,6 +1784,39 @@ class database
         return $zipped;
         
     }
+    
+
+    public function dump_database_table_to_zip($db,$table,$filename = "")
+    {
+        
+        if ($filename == "") $filename = "$db-$table.sql";
+        
+        $cmd  = "mysqldump -h{$this->HOST()} -u{$this->userID} -p{$this->pwd} $db $table  > $filename" ;
+        exec($cmd);
+     
+        if (!file_exists($filename)) 
+        {
+            ErrorMessage::Marker("FAILED to create SQL file from $db .. $table");
+            return false;
+        }
+        
+        $zipped = file::move_to_zip_file($filename);
+        
+        if (is_null($zipped)) 
+        {
+            ErrorMessage::Marker("FAILED to zip SQL file");
+            return false;            
+        }
+        
+        file::Delete($filename);
+        
+        return $zipped;
+        
+    }
+    
+    
+    
+    
     
     
 }
