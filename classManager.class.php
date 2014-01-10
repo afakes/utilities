@@ -314,69 +314,7 @@ class classManager {
     }
 
 
-    /*
-    * @method loadedSensors
-    * @return mixed
-    */
-    public function loadedSensors()
-    {
-
-        $classFiles = get_included_files() ;
-        $sensorPackageFiles = array_util::ElementsThatContain($classFiles, "sensorPackage");
-
-        debug::this($sensorPackageFiles);
-
-
-        $sensorNamesList = array();
-
-        // load classes found
-        foreach ($sensorPackageFiles as $sensorPackageFile)
-        {
-
-
-            $thisFile = file_get_contents($sensorPackageFile);
-
-            $extendsPos = strpos($thisFile,"extends");
-
-            if ($extendsPos > 0)
-            {
-
-                $extendsPos = $extendsPos + 7;
-
-                $bracePos = strpos($thisFile,"{",$extendsPos) ;
-                $extendsNameLen = $bracePos - $extendsPos;
-
-                $extendsName = trim(substr($thisFile, $extendsPos, $extendsNameLen));
-
-
-                if ( $extendsName == "sensorPackage")
-                {
-                    //debug::this("---- ".$sensorPackageFile." = ".strlen($sensorPackageFile)."\n");
-                    //debug::this("EXTEND NAME [".$extendsName."] \n");
-
-                    $classPos = strpos($thisFile,"class") + 5;
-                    $bracePos = strpos($thisFile,"extends",$classPos) ;
-                    $classNameLen = $bracePos - $classPos;
-
-                    $fileClassName = trim(substr($thisFile, $classPos, $classNameLen));
-
-                    $sensorNamesList[$fileClassName] = $sensorPackageFile;
-
-                }
-
-
-
-            }
-            // echo " class name in Load $value is $fileClassName <br>\n";
-            // include_once $value;
-        }
-
-
-
-        return $sensorNamesList;
-
-    }
-
+   
 
 
 }
