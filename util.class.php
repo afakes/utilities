@@ -1,6 +1,7 @@
 <?php
 class util {
 
+    // some change
     
     /**
      * Characters that are not letters or numbers 
