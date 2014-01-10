@@ -1090,6 +1090,34 @@ class database
 
     }
 
+    public function InfileImport($fullPath,$db,$tableName,$delim,$colNames)
+    {
+        $sql = "";
+        
+        $sql .= "\nload data local infile '$fullPath' into table `$db`.`$tableName`";
+        $sql .= "\nfields terminated by '$delim'";
+        $sql .= "\noptionally enclosed by '\"' ";
+        $sql .= "\nlines terminated by '\\n'";
+        $sql .= "\nIGNORE 1 LINES";
+        $sql .= "\n(`".join("`,`",$colNames)."`);\n";
+        
+        $temp_filename = file::random_filename().".sql";
+        
+        file_put_contents($temp_filename, $sql."\n");
+        
+        $cmd = "mysql -u{$this->userID} -p{$this->pwd} -e 'source {$temp_filename};' {$this->db} ";
+        
+        echo "cmd = $cmd\n";
+        
+        exec($cmd);
+        
+        file::delete($temp_filename);
+        
+        return true;
+        
+    }
+
+    
     public function cleanColumnName($rawColumnName,$numeric_prefix = 'F')
     {
           

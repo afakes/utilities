@@ -1,15 +1,6 @@
 <?php
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
-/**
- * Description of ErrorMessage
- *
- * @author jc166922
- */
 class ErrorMessage extends Object {
     
     public static function Marker($message)
